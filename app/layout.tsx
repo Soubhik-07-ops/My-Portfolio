@@ -1,11 +1,7 @@
-// app/layout.tsx
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css' // Your existing global CSS import
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import ScrollProgress from '@/components/ui/ScrollProgress'
-import ParticlesBackground from '@/components/Background/ParticlesBackground'
+import './globals.css'
+import ClientLayout from './ClientLayout'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,15 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-white transition-colors flex flex-col min-h-screen`}
-      >
-        <ParticlesBackground />
-
-        <Navbar />
-        <ScrollProgress />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 dark:bg-gray-950 dark:text-white transition-colors flex flex-col min-h-screen`}>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   )

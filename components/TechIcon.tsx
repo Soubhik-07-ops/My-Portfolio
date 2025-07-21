@@ -25,7 +25,7 @@ const TechIcon: React.FC<TechIconProps> = ({
 
     return (
         <motion.div
-            className={`flex flex-col items-center p-4 rounded-xl transition-all duration-300 ${isHighlighted
+            className={`flex flex-col items-center p-3 sm:p-4 rounded-xl transition-all duration-300 ${isHighlighted
                 ? 'bg-gradient-to-br from-blue-900/30 to-purple-900/20 shadow-lg shadow-blue-500/20 border border-blue-500/30'
                 : 'bg-gray-800/30 hover:bg-gray-700/50'
                 }`}
@@ -39,7 +39,8 @@ const TechIcon: React.FC<TechIconProps> = ({
             transition={{ duration: 0.3 }}
         >
             <motion.div
-                className="relative w-16 h-16 mb-3"
+                // MODIFIED: Responsive width and height for the icon container
+                className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mb-2 sm:mb-3"
                 animate={{
                     scale: isHighlighted ? 1.15 : 1,
                 }}
@@ -47,9 +48,9 @@ const TechIcon: React.FC<TechIconProps> = ({
                 <Image
                     src={iconPath}
                     alt={name}
-                    width={64}
-                    height={64}
+                    fill // Use 'fill' to make the image size relative to its parent div
                     className="object-contain"
+                    sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px" // Inform Next.js for better optimization
                 />
                 {isHighlighted && (
                     <motion.div
@@ -64,9 +65,9 @@ const TechIcon: React.FC<TechIconProps> = ({
                 )}
             </motion.div>
 
-            <h3 className="text-sm font-medium text-center mb-2">{name}</h3>
+            <h3 className="text-sm sm:text-base font-medium text-center mb-1 sm:mb-2">{name}</h3>
 
-            <div className="w-full bg-gray-700 rounded-full h-2">
+            <div className="w-full bg-gray-700 rounded-full h-1.5 sm:h-2">
                 <motion.div
                     className={`h-full rounded-full bg-gradient-to-r ${getProgressColor(percentage)}`}
                     initial={{ width: 0 }}
@@ -76,7 +77,7 @@ const TechIcon: React.FC<TechIconProps> = ({
             </div>
 
             <motion.span
-                className="text-xs mt-1 text-gray-300"
+                className="text-xs sm:text-sm mt-1 text-gray-300"
                 animate={{
                     color: isHighlighted ? '#ffffff' : '#d1d5db',
                     scale: isHighlighted ? 1.1 : 1

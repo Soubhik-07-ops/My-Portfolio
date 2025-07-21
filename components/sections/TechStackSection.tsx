@@ -1,3 +1,4 @@
+// techstacksection.tsx
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
 import TechIcon from '@/components/TechIcon';
@@ -42,7 +43,7 @@ const allSkills: Skill[] = [
     { name: 'AWS S3', iconPath: '/images/tech/aws.png', percentage: 50, category: ['All', 'Devops'] },
     { name: 'Azure', iconPath: '/images/tech/azure.png', percentage: 40, category: ['All', 'Devops'] },
     { name: 'Git', iconPath: '/images/tech/git.png', percentage: 85, category: ['All', 'Devops'] },
-    { name: 'GitHub Actions', iconPath: '/images/tech/GithubActions.png', percentage: 70, category: ['All', 'Devops'] },
+    { name: 'GitHub Actions', iconPath: '/images/tech/GitHubActions.png', percentage: 70, category: ['All', 'Devops'] },
     { name: 'Jest', iconPath: '/images/tech/Jest.png', percentage: 60, category: ['All', 'Frontend'] },
 ];
 
@@ -128,7 +129,7 @@ export default function TechStackSection() {
     return (
         <section
             id="tech-stack"
-            className="relative min-h-screen py-16 scroll-mt-20 overflow-hidden"
+            className="relative min-h-screen py-16 px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 overflow-hidden" // Added responsive horizontal padding
             style={{
                 backgroundColor: '#0e253df1',
                 position: 'relative',
@@ -167,9 +168,9 @@ export default function TechStackSection() {
                 </div>
             )}
 
-            <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="max-w-6xl mx-auto px-0 sm:px-0 relative z-10"> {/* Changed this to px-0 as outer section handles it */}
                 <motion.h1
-                    className="text-5xl md:text-6xl font-bold mb-12 text-primary text-center relative z-20"
+                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 sm:mb-10 md:mb-12 text-primary text-center relative z-20" // Adjusted heading sizes and margins
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -181,7 +182,7 @@ export default function TechStackSection() {
 
                 {/* Category Filter Buttons */}
                 <motion.div
-                    className="flex flex-wrap justify-center mb-12 gap-4 relative z-10"
+                    className="flex flex-wrap justify-center mb-10 sm:mb-12 gap-2 sm:gap-3 md:gap-4 relative z-10" // Adjusted gap and margin-bottom
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
@@ -190,7 +191,7 @@ export default function TechStackSection() {
                         <motion.button
                             key={category}
                             onClick={() => setActiveCategory(category)}
-                            className="custom-radius px-6 py-2 font-medium relative overflow-hidden"
+                            className="custom-radius px-4 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base font-medium relative overflow-hidden" // Adjusted button padding and font size
                             variants={buttonVariants}
                             initial="rest"
                             whileHover="hover"
@@ -204,7 +205,7 @@ export default function TechStackSection() {
 
                 {/* Tech Icons Grid */}
                 <motion.div
-                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 relative z-10"
+                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 md:gap-8 relative z-10" // Adjusted grid gap and added xl breakpoint for more columns
                     variants={container}
                     initial="hidden"
                     animate="show"

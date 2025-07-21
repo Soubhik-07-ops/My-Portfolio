@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
 import { Menu, X } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { useContactForm } from '@/app/context/ContactFormContext'
 
 const navItems = [
     { href: '#home', label: 'Home' },
@@ -13,23 +14,20 @@ const navItems = [
 ]
 
 export default function Navbar() {
+    const { open } = useContactForm()
     const [isOpen, setIsOpen] = useState(false)
     const [activeSection, setActiveSection] = useState<string>('home')
     const [scrolled, setScrolled] = useState(false)
     const [isHeroVisible, setIsHeroVisible] = useState(true)
-
     const navbarRef = useRef<HTMLElement>(null)
 
     useEffect(() => {
-        // Force scroll to home on page load/reload
         const scrollToHomeOnLoad = () => {
             const homeSection = document.getElementById('home');
             if (homeSection) {
-                // Use a slight delay to ensure all content is rendered before scrolling
-                // This can help prevent "jumping" if images/dynamic content are loading
                 setTimeout(() => {
                     homeSection.scrollIntoView({ behavior: 'smooth' });
-                }, 100); // Small delay
+                }, 100);
             }
         };
         scrollToHomeOnLoad();
@@ -39,53 +37,44 @@ export default function Navbar() {
 
         const handleScroll = () => {
             navbarHeight = navbarRef.current?.offsetHeight || 80;
-            // Define an "activation point" in the viewport, e.g., 20% from top
-            // This is more robust than a fixed pixel offset
-            const activationPoint = window.innerHeight * 0.25; // 25% down the viewport
+            const activationPoint = window.innerHeight * 0.25;
 
-            let foundActiveSection = 'home'; // Default to home if nothing else is active
+            let foundActiveSection = 'home';
 
-            // Iterate through sections from bottom to top
-            // This ensures the highest visible section (closest to top of viewport) is prioritized
             for (let i = sectionIds.length - 1; i >= 0; i--) {
                 const id = sectionIds[i];
                 const section = document.getElementById(id);
 
                 if (section) {
                     const rect = section.getBoundingClientRect();
-                    // Check if the section's top is at or above the activation point
-                    // AND its bottom is below the activation point (meaning it's covering the activation point)
                     if (rect.top <= activationPoint && rect.bottom > activationPoint) {
                         foundActiveSection = id;
-                        break; // Found the active section, break the loop
+                        break;
                     }
                 }
             }
             setActiveSection(foundActiveSection);
-
 
             setScrolled(window.scrollY > 50)
 
             const homeSection = document.getElementById('home')
             if (homeSection) {
                 const homeRect = homeSection.getBoundingClientRect()
-                // Home section is considered visible if a significant portion is within the viewport
                 setIsHeroVisible(homeRect.top < window.innerHeight * 0.3 && homeRect.bottom > window.innerHeight * 0.7);
             }
         }
 
-        // Add a debounce to handleScroll to prevent excessive calls on rapid scrolling
         let scrollTimeout: NodeJS.Timeout;
         const debouncedHandleScroll = () => {
             clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(handleScroll, 50); // Adjust debounce time as needed
+            scrollTimeout = setTimeout(handleScroll, 50);
         };
 
         window.addEventListener('scroll', debouncedHandleScroll)
-        handleScroll() // Call once on mount
+        handleScroll()
         return () => {
             window.removeEventListener('scroll', debouncedHandleScroll);
-            clearTimeout(scrollTimeout); // Clear timeout on unmount
+            clearTimeout(scrollTimeout);
         }
     }, [])
 
@@ -101,7 +90,6 @@ export default function Navbar() {
                 scrolled
                     ? "bg-white/80 dark:bg-gray-950/80 border-b border-gray-200 dark:border-gray-800 shadow-xl"
                     : "bg-white/70 dark:bg-gray-950/70",
-                // Ensure shadow appears if hero scrolls away, even if scrolled state hasn't triggered yet
                 (!isHeroVisible && !scrolled) && "border-b border-gray-200 dark:border-gray-800 shadow-xl"
             )}
         >
@@ -110,23 +98,21 @@ export default function Navbar() {
                     href="#home"
                     onClick={closeMenu}
                     className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-transparent bg-clip-text
-                                 hover:scale-105 transition-transform duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
-                                 relative group"
+                     hover:scale-105 transition-transform duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
+                     relative group"
                 >
                     Soubhik Roy
                     <span className="absolute -bottom-1 left-0 h-[3px] w-full bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left"></span>
                 </a>
 
-                <div className="hidden md:flex gap-8 text-sm font-semibold">
+                <div className="hidden md:flex gap-8 text-sm font-semibold items-center">
                     {navItems.map(item => (
                         <a
                             key={item.href}
                             href={item.href}
-                            // Close menu on click for mobile, but it's hidden on desktop so it won't matter
-                            // Also ensure activeSection is set immediately on click for better UX
                             onClick={() => {
-                                closeMenu();
-                                setActiveSection(item.href.replace('#', '')); // Set active immediately on click
+                                closeMenu()
+                                setActiveSection(item.href.replace('#', ''))
                             }}
                             className={cn(
                                 'relative transition-all duration-300 ease-in-out group',
@@ -144,15 +130,36 @@ export default function Navbar() {
                             />
                         </a>
                     ))}
+                    <button
+                        onClick={() => {
+                            open()
+                            closeMenu()
+                        }}
+                        className="ml-4 px-4 py-2 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-white rounded-md font-semibold
+                       hover:shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                    >
+                        Let's Talk
+                    </button>
                 </div>
 
-                <button
-                    className="md:hidden text-gray-800 dark:text-gray-100 transition-transform duration-300 ease-in-out hover:scale-110 active:scale-90"
-                    onClick={toggleMenu}
-                    aria-label={isOpen ? "Close menu" : "Open menu"}
-                >
-                    {isOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
+                <div className="md:hidden flex items-center gap-4">
+                    <button
+                        onClick={() => {
+                            open()
+                            closeMenu()
+                        }}
+                        className="px-3 py-1.5 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-white rounded-md text-sm font-semibold"
+                    >
+                        Talk
+                    </button>
+                    <button
+                        className="text-gray-800 dark:text-gray-100 transition-transform duration-300 ease-in-out hover:scale-110 active:scale-90"
+                        onClick={toggleMenu}
+                        aria-label={isOpen ? "Close menu" : "Open menu"}
+                    >
+                        {isOpen ? <X size={28} /> : <Menu size={28} />}
+                    </button>
+                </div>
             </div>
 
             <div className={cn(
@@ -165,8 +172,8 @@ export default function Navbar() {
                         key={item.href}
                         href={item.href}
                         onClick={() => {
-                            closeMenu();
-                            setActiveSection(item.href.replace('#', '')); // Set active immediately on click
+                            closeMenu()
+                            setActiveSection(item.href.replace('#', ''))
                         }}
                         className={cn(
                             'block text-base font-medium px-4 py-2 rounded-md transition-colors duration-200',
@@ -178,6 +185,15 @@ export default function Navbar() {
                         {item.label}
                     </a>
                 ))}
+                <button
+                    onClick={() => {
+                        open()
+                        closeMenu()
+                    }}
+                    className="w-full text-center px-4 py-2 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-white rounded-md font-semibold shadow-md"
+                >
+                    Let's Talk
+                </button>
             </div>
         </nav>
     )

@@ -1,4 +1,5 @@
 'use client'
+
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { TypeAnimation } from 'react-type-animation'
 import { Button } from '@/components/ui/button'
@@ -6,6 +7,8 @@ import { Github, Linkedin, Mail } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Particles from '@/ReactBits/Particles/Particles'
+import { useContactForm } from '@/app/context/ContactFormContext'
+
 
 const SocialCards = () => {
     return (
@@ -68,6 +71,7 @@ const SocialCards = () => {
 }
 
 export default function HeroSection() {
+    const { open } = useContactForm()
     const containerRef = useRef<HTMLDivElement>(null)
     const [isClient, setIsClient] = useState(false)
     const { scrollYProgress } = useScroll({
@@ -87,7 +91,7 @@ export default function HeroSection() {
         return (
             <section
                 ref={containerRef}
-                className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-950 to-gray-900 px-6 pt-32"
+                className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-950 to-gray-900 px-6 pt-32 pb-16 md:pb-24 lg:pb-32" // Added pb-16, md:pb-24, lg:pb-32
             >
                 {/* Static fallback content */}
                 <div className="relative z-10 mx-auto max-w-6xl">
@@ -107,6 +111,7 @@ export default function HeroSection() {
             id="home"
             ref={containerRef}
             className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-gray-950 to-gray-900 px-4 sm:px-6 pt-24 md:pt-32"
+            // We'll manage overall bottom padding via the content div
             style={{
                 zIndex: 10,
             }}
@@ -127,7 +132,7 @@ export default function HeroSection() {
 
             {/* Responsive Profile Image */}
             <motion.div
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-20"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden md:block"
                 style={{
                     width: 'min(100vw, 800px)',
                     height: 'min(125vw, 1000px)',
@@ -146,8 +151,10 @@ export default function HeroSection() {
                 />
             </motion.div>
 
-            {/* Content */}
-            <div className="relative z-30 mx-auto max-w-6xl mt-10">
+            {/* Content - THIS IS WHERE WE ADD FLEX FOR SPACING */}
+            <div className="relative z-30 mx-auto max-w-6xl mt-10
+                            flex flex-col h-full justify-center
+                            pb-16 sm:pb-20 md:pb-24 lg:pb-32"> {/* ADDED PADDING BOTTOM HERE */}
                 {/* Animated Intro */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -209,14 +216,17 @@ export default function HeroSection() {
                                 <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                             </Button>
                         </a>
-
                     </motion.div>
 
                     <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        <Button variant="outline" className="group relative overflow-hidden rounded-lg border-2 border-cyan-400/50 px-6 py-4 md:px-8 md:py-6 text-base md:text-lg font-semibold backdrop-blur-md hover:shadow-[0_0_15px_2px_rgba(34,211,238,0.2)] transition-all duration-300">
+                        <Button
+                            variant="outline"
+                            onClick={open}
+                            className="group relative overflow-hidden rounded-lg border-2 border-cyan-400/50 px-6 py-4 md:px-8 md:py-6 text-base md:text-lg font-semibold backdrop-blur-md hover:shadow-[0_0_15px_2px_rgba(34,211,238,0.2)] transition-all duration-300"
+                        >
                             <span className="relative z-10 text-cyan-400">Hire Me!</span>
                             <span className="absolute inset-0 bg-cyan-400/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         </Button>
