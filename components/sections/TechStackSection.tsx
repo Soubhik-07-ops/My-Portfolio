@@ -18,15 +18,15 @@ const allSkills: Skill[] = [
     { name: 'JavaScript', iconPath: '/images/tech/javascript.png', percentage: 85, category: ['All', 'Frontend'] },
     { name: 'TypeScript', iconPath: '/images/tech/typescript.png', percentage: 80, category: ['All', 'Frontend'] },
     { name: 'React.js', iconPath: '/images/tech/reactjs.png', percentage: 85, category: ['All', 'Frontend'] },
-    { name: 'Next.js', iconPath: '/images/tech/next.js.png', percentage: 80, category: ['All', 'Frontend'] },
+    { name: 'Next.js', iconPath: '/images/tech/Next.js.png', percentage: 80, category: ['All', 'Frontend'] },
     { name: 'Tailwind CSS', iconPath: '/images/tech/tailwind.png', percentage: 90, category: ['All', 'Frontend'] },
     // Backend
     { name: 'Node.js', iconPath: '/images/tech/nodejs.png', percentage: 75, category: ['All', 'Backend'] },
     { name: 'Express.js', iconPath: '/images/tech/express.png', percentage: 70, category: ['All', 'Backend'] },
     { name: 'Spring Boot', iconPath: '/images/tech/springboot.png', percentage: 70, category: ['All', 'Backend'] },
     { name: 'Flask', iconPath: '/images/tech/flask.png', percentage: 65, category: ['All', 'Backend'] },
-    { name: 'FastAPI', iconPath: '/images/tech/Fastapi.png', percentage: 60, category: ['All', 'Backend'] },
-    { name: 'GraphQL', iconPath: '/images/tech/graphql.png', percentage: 50, category: ['All', 'Backend'] },
+    { name: 'FastAPI', iconPath: '/images/tech/FastAPI.png', percentage: 60, category: ['All', 'Backend'] },
+    { name: 'GraphQL', iconPath: '/images/tech/graphQL.png', percentage: 50, category: ['All', 'Backend'] },
     // Databases
     { name: 'PostgreSQL', iconPath: '/images/tech/postgresql.png', percentage: 75, category: ['All', 'Backend'] },
     { name: 'MongoDB', iconPath: '/images/tech/mongodb.png', percentage: 65, category: ['All', 'Backend'] },
