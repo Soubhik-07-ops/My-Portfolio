@@ -175,9 +175,8 @@ export default function TechStackSection() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    Tech Stack
+                    TECH STACK
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1/6 bg-gradient-to-r from-blue-500 via-pink-500 to-red-500 rounded-full blur-sm"></div>
                 </motion.h1>
 
                 {/* Category Filter Buttons */}

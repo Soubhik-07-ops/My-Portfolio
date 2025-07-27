@@ -1,58 +1,115 @@
 "use client";
 import ProjectCard from "@/components/ProjectCard";
+import { motion, easeOut, Transition, Variants } from "framer-motion";
 
 const projects = [
     {
         title: "AI Model Benchmarking Tool",
-        description: "Benchmarked 25+ ML models with PDF reports, <50ms latency, and real-time dashboard via Supabase.",
-        tech: ["Next.js", "Supabase", "PostgreSQL", "Pandas"],
-        github: "#",
+        description: "Developed a comprehensive tool to benchmark over 25 machine learning models against custom datasets. Features include PDF report generation, real-time performance dashboards via Supabase, and achieving sub-50ms latency for critical operations.",
+        tech: ["Next.js", "Supabase", "PostgreSQL", "Pandas", "Plotly"],
+        github: "https://github.com/Soubhik-07-ops/AI_MODEL_BENCHMARK",
+        liveUrl: "https://ai-benchmarking-tool.vercel.app/",
+        imageUrl: "/images/projects/Benchmark.png",
     },
     {
-        title: "PrepIQ – AI-Powered Exam Platform",
-        description: "AI-driven exam strategy with question prediction, drag-drop UI, and PDF kits for students & teachers.",
-        tech: ["React", "Express", "JWT", "MongoDB"],
-        github: "#",
+        title: "Study Wise – AI-Powered Exam Platform",
+        description: "Engineered an AI-driven exam preparation platform offering personalized study strategies, predictive question analysis, intuitive drag-and-drop UI for custom exam creation, and printable PDF study kits for both students and educators.",
+        tech: ["React", "Express.js", "JWT", "MongoDB", "OpenAI API"],
+        github: "https://github.com/Soubhik-07-ops/AI-Study_Planner",
+        liveUrl: "https://prepiq.vercel.app/",
+        imageUrl: "/images/projects/StudyWise.png",
     },
     {
         title: "Face Mask Detection System",
-        description: "Deployed 98% accurate MobileNetV2 model with Flask REST API and OpenCV webcam stream.",
-        tech: ["Flask", "OpenCV", "CNN", "IoT"],
-        github: "#",
+        description: "Implemented and deployed a high-accuracy (98%) face mask detection system using MobileNetV2. Integrated with Flask to provide a real-time REST API and leveraged OpenCV for live webcam stream analysis, suitable for IoT applications.",
+        tech: ["Flask", "OpenCV", "MobileNetV2", "TensorFlow", "IoT"],
+        github: "https://github.com/Soubhik-07-ops/Mask_Detection",
+        imageUrl: "/images/projects/Face.png",
+        liveUrl: "https://yourmask.streamlit.app/",
     },
     {
         title: "BookNest E-Commerce",
-        description: "Built full-stack book store with PAN-India shipping and Lighthouse score >90.",
-        tech: ["Next.js", "Tailwind", "Node.js"],
-        github: "#",
-        demo: "#",
+        description: "Developed a full-stack e-commerce platform for books with comprehensive features including user authentication, shopping cart, order management, and PAN-India shipping. Achieved a Lighthouse performance score greater than 90 across all metrics.",
+        tech: ["Next.js", "Tailwind CSS", "Node.js", "Stripe", "PostgreSQL"],
+        github: "https://github.com/Soubhik-07-ops/BookNest",
+        liveUrl: "https://book-nest-plum.vercel.app/",
+        imageUrl: "/images/projects/BookNest.png",
     },
     {
         title: "EV-Routing Algorithm – IIT Dhanbad",
-        description: "Optimized 20-truck fleet on 500km+ routes, cutting turnaround by 20% using custom EV-routing algos.",
-        tech: ["TypeScript", "Flask", "Next.js", "DataViz"],
+        description: "Contributed to an innovative project at IIT Dhanbad, optimizing routing for a multiple electric vehicle fleet across routes exceeding 500km. Developed custom EV-routing algorithms that resulted in a 20% reduction in vehicle turnaround time.",
+        tech: ["TypeScript", "Flask", "Next.js", "DataViz", "Optimization Algorithms"],
+        github: "https://github.com/Soubhik-07-ops/My-Portfolio",
+        imageUrl: "/images/projects/Route.png",
+    },
+    {
+        title: "Personal Portfolio",
+        description: "The first iteration of my personal portfolio website, built with modern web technologies to showcase my skills and projects. Focused on responsive design and clean aesthetics.",
+        tech: ["React", "Next", "Typescript", "Tailwind CSS", "Framer Motion"],
+        github: "https://github.com/Soubhik-07-ops/My-Portfolio",
+        liveUrl: "https://my-portfolio-tau-red-14.vercel.app/",
+        imageUrl: "/images/projects/Portfolio.png",
     },
 ];
+
+const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2
+        }
+    }
+};
+
+const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 50 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut as Transition["ease"] } }
+};
 
 export default function ProjectsSection() {
     return (
         <section
             id="projects"
-            className="max-w-6xl mx-auto px-6 py-16 scroll-mt-20"
+            className="w-full px-4 sm:px-6 py-20 scroll-mt-20 relative"
             style={{
-                // Add your desired background color here to hide the global particles.
-                // For example, if your main site background is white, use white here.
-                backgroundColor: 'black', // Or use 'your-site-main-bg-color'
-                position: 'relative', // Good practice to keep this
-                zIndex: 10,           // Ensure this section is above the global particles (z-index: -1)
+                background: 'radial-gradient(circle at 10% 20%, rgba(15, 30, 60, 0.9) 0%, rgba(5, 15, 40, 0.95) 90%)',
+                boxShadow: 'inset 0 0 100px rgba(0, 0, 0, 0.7)'
             }}
         >
-            <h1 className="text-4xl font-bold text-primary mb-8">Projects</h1>
+            {/* Background decorative elements */}
+            <div className="absolute inset-0 overflow-hidden opacity-20">
+                <div className="absolute top-0 left-1/4 w-32 h-32 rounded-full bg-blue-600 blur-[80px]"></div>
+                <div className="absolute bottom-0 right-1/4 w-40 h-40 rounded-full bg-purple-600 blur-[100px]"></div>
+            </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                {projects.map((proj, i) => (
-                    <ProjectCard key={i} {...proj} />
-                ))}
+            <div className="max-w-7xl mx-auto relative z-10">
+                {/* Section Heading */}
+                <motion.h1
+                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 sm:mb-10 md:mb-12 text-primary text-center relative z-20" // Adjusted heading sizes and margins
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    MY PROJECTS
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
+                </motion.h1>
+
+                {/* Project Grid */}
+                <motion.div
+                    className="grid gap-8 grid-cols-1 lg:grid-cols-2 xl:grid-cols-2"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, amount: 0.1 }}
+                >
+                    {projects.map((proj, i) => (
+                        <motion.div key={i} variants={itemVariants} className="w-full">
+                            <ProjectCard {...proj} />
+                        </motion.div>
+                    ))}
+                </motion.div>
             </div>
         </section>
     );

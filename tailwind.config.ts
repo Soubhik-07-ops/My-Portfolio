@@ -1,3 +1,4 @@
+// tailwind.config.ts
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -25,10 +26,12 @@ const config: Config = {
                 '120': '30rem',  // 30rem = 480px
                 '150': '37.5rem', // 37.5rem = 600px
             },
-
         },
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/line-clamp'),
+        require('@tailwindcss/aspect-ratio'),
+    ],
 }
 
 export default config

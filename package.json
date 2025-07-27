@@ -36,6 +36,7 @@
     "tsparticles-slim": "^2.12.0"
   },
   "devDependencies": {
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^20",
     "@types/react": "^19",

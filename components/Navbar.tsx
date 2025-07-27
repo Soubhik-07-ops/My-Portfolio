@@ -185,15 +185,6 @@ export default function Navbar() {
                         {item.label}
                     </a>
                 ))}
-                <button
-                    onClick={() => {
-                        open()
-                        closeMenu()
-                    }}
-                    className="w-full text-center px-4 py-2 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-white rounded-md font-semibold shadow-md"
-                >
-                    Let's Talk
-                </button>
             </div>
         </nav>
     )
