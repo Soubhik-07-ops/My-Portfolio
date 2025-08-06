@@ -274,15 +274,13 @@ const LeetCodeDashboard = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <motion.h1
-                        className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 sm:mb-10 md:mb-12 text-white text-center relative"
+                        className="text-4xl md:text-6xl font-bold mb-12 text-primary text-center relative z-20"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-                            LEETCODE PROFILE
-                        </span>
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"></div>
+                        LEETCODE PROFILE
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                     </motion.h1>
 
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start mb-8">

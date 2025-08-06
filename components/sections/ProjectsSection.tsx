@@ -93,10 +93,9 @@ export default function ProjectsSection() {
 
             <div className="max-w-7xl mx-auto relative z-10">
                 <motion.h1
-                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-12 sm:mb-16 text-primary text-center relative"
+                    className="text-4xl md:text-6xl font-bold mb-12 text-primary text-center relative z-20"
                     initial={{ opacity: 0, y: -20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.5 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
                     MY PROJECTS
