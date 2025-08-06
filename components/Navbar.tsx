@@ -9,7 +9,8 @@ const navItems = [
     { href: '#home', label: 'Home' },
     { href: '#about', label: 'About' },
     { href: '#projects', label: 'Projects' },
-    { href: '#publications', label: 'Publications' },
+    { href: '#publications', label: 'Pub & Cer' },
+    { href: '#leetcode', label: 'LeetCode' },
     { href: '#contact', label: 'Contact' },
 ]
 

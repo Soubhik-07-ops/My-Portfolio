@@ -60,3 +60,27 @@ body::-webkit-scrollbar {
 .custom-radius {
   border-radius: 25% 10%;
 }
+
+/* Custom Scrollbar for Heatmap */
+.heatmap-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.heatmap-container::-webkit-scrollbar-track {
+  background: #1e293b;
+  /* A dark color from your theme */
+  border-radius: 10px;
+}
+
+.heatmap-container::-webkit-scrollbar-thumb {
+  background-color: #3b82f6;
+  /* Your theme's accent color */
+  border-radius: 10px;
+  border: 2px solid #1e293b;
+  /* Creates a padding effect */
+}
+
+.heatmap-container::-webkit-scrollbar-thumb:hover {
+  background-color: #60a5fa;
+  /* A lighter color for hover */
+}

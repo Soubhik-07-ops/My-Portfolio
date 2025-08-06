@@ -2,10 +2,11 @@
 import HeroSection from '@/components/sections/HeroSection'
 import AboutSection from '@/components/sections/AboutSection'
 import ProjectsSection from '@/components/sections/ProjectsSection'
-import PublicationsSection from '@/components/sections/PublicationsSection'
+import PublicationsSection from '@/components/sections/pub&cer/PublicationsSection'
 import ContactSection from '@/components/sections/ContactSection'
 import BackToTopButton from '@/components/BackToTopButton'
 import TechStackSection from '@/components/sections/TechStackSection'
+import LeetCodeDashboard from '@/components/sections/LeetCodeStats'
 
 export default function Home() {
   return (
@@ -25,8 +26,11 @@ export default function Home() {
       {/* 📚 Publications Section */}
       <PublicationsSection />
 
+      <LeetCodeDashboard />
+
       {/* ✉️ Contact Section */}
       <ContactSection />
+
 
       <BackToTopButton />
     </main>

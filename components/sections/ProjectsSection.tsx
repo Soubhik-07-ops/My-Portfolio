@@ -1,6 +1,6 @@
 "use client";
 import ProjectCard from "@/components/ProjectCard";
-import { motion, easeOut, Transition, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const projects = [
     {
@@ -57,48 +57,55 @@ const containerVariants: Variants = {
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1,
+            staggerChildren: 0.15,
             delayChildren: 0.2
         }
     }
 };
 
 const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut as Transition["ease"] } }
+    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    show: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: {
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1]
+        }
+    }
 };
 
 export default function ProjectsSection() {
     return (
         <section
             id="projects"
-            className="w-full px-4 sm:px-6 py-20 scroll-mt-20 relative"
+            className="w-full px-4 sm:px-6 py-16 scroll-mt-20 relative overflow-hidden"
             style={{
                 background: 'radial-gradient(circle at 10% 20%, rgba(15, 30, 60, 0.9) 0%, rgba(5, 15, 40, 0.95) 90%)',
                 boxShadow: 'inset 0 0 100px rgba(0, 0, 0, 0.7)'
             }}
         >
-            {/* Background decorative elements */}
-            <div className="absolute inset-0 overflow-hidden opacity-20">
+            <div className="absolute inset-0 opacity-20">
                 <div className="absolute top-0 left-1/4 w-32 h-32 rounded-full bg-blue-600 blur-[80px]"></div>
                 <div className="absolute bottom-0 right-1/4 w-40 h-40 rounded-full bg-purple-600 blur-[100px]"></div>
             </div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                {/* Section Heading */}
                 <motion.h1
-                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 sm:mb-10 md:mb-12 text-primary text-center relative z-20" // Adjusted heading sizes and margins
+                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-12 sm:mb-16 text-primary text-center relative"
                     initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 0.5 }}
                 >
                     MY PROJECTS
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                 </motion.h1>
 
-                {/* Project Grid */}
                 <motion.div
-                    className="grid gap-8 grid-cols-1 lg:grid-cols-2 xl:grid-cols-2"
+                    // --- UPDATED: 1 col on mobile, 2 on small screens, 3 on large screens ---
+                    className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="show"
