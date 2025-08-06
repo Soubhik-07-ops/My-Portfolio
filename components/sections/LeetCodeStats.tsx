@@ -280,7 +280,7 @@ const LeetCodeDashboard = () => {
                         transition={{ duration: 0.5 }}
                     >
                         LEETCODE PROFILE
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/3 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                     </motion.h1>
 
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start mb-8">
