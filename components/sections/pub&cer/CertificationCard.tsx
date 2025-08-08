@@ -50,7 +50,6 @@ const CertificationCard = ({ title, issuer, imageUrl, certLink, variants, custom
 
             {/* Content section */}
             <div className="flex flex-col justify-between flex-grow p-6 relative">
-                {/* Award icon */}
                 <motion.div
                     whileHover={{ rotate: 10, scale: 1.1 }}
                     className="absolute -top-6 left-6 h-12 w-12 rounded-full bg-cyan-500/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors"
@@ -76,7 +75,6 @@ const CertificationCard = ({ title, issuer, imageUrl, certLink, variants, custom
                     </div>
                 </div>
 
-                {/* Button */}
                 <motion.a
                     href={certLink}
                     target="_blank"

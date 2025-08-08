@@ -129,7 +129,6 @@ const sliderVariants: Variants = {
     })
 };
 
-// --- Component ---
 const PublicationSection = () => {
     const [[currentIndex, direction], setCurrentIndex] = useState([0, 0]);
     const [autoScroll, setAutoScroll] = useState(true);
@@ -166,45 +165,50 @@ const PublicationSection = () => {
         >
             <div className="max-w-7xl mx-auto relative z-10">
                 <motion.div
-                    className="text-center mb-12"
+                    className="text-center mb-8 md:mb-12"
                     initial={{ opacity: 0, y: -20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="relative text-4xl md:text-6xl font-bold text-primary">
+                    <h2 className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary">
                         PUBLICATION & CERTIFICATION
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/2 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                     </h2>
-                    <p className="text-zinc-400 text-lg mt-6">A blend of academic contributions and skill validations</p>
+                    <p className="text-zinc-400 text-base sm:text-lg mt-4 sm:mt-6">
+                        A blend of academic contributions and skill validations
+                    </p>
                 </motion.div>
 
-                <div className="flex flex-col lg:flex-row w-full items-stretch gap-8 lg:gap-0">
+                <div className="flex flex-col lg:flex-row w-full items-stretch gap-6 lg:gap-8">
                     {/* Left Side: Publication */}
-                    <div className="w-full lg:w-1/2 lg:pr-6 flex justify-center ">
-                        <div className="w-full max-w-xl ">
+                    <div className="w-full lg:w-1/2 flex justify-center">
+                        <div className="w-full max-w-xl h-full min-h-[400px] md:min-h-[500px] overflow-y-auto">
                             <PublicationCard {...publication} />
                         </div>
                     </div>
 
                     {/* Vertical Divider - Visible only on lg screens */}
                     <div className="hidden lg:flex items-center justify-center mx-2">
-                        <div className="w-px h-full bg-gradient-to-b from-transparent via-pink-500 to-transparent"></div>
+                        <div className="w-px h-[80%] bg-gradient-to-b from-transparent via-pink-500 to-transparent"></div>
                     </div>
 
                     {/* Horizontal Divider - Visible only on smaller screens */}
-                    <div className="lg:hidden flex justify-center my-4 w-full">
+                    <div className="lg:hidden flex justify-center my-2 w-full">
                         <div className="w-3/4 h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent"></div>
                     </div>
 
                     {/* Right Side: Certification Carousel */}
-                    <div className="w-full lg:w-1/2 lg:pl-6 mt-8 lg:mt-0 flex flex-col items-center">
-                        <div className="relative w-full max-w-xl h-[32rem] overflow-hidden">
+                    <div className="w-full lg:w-1/2 mt-4 lg:mt-0 flex flex-col items-center">
+                        <div className="relative w-full max-w-xl h-[60vh] min-h-[400px] md:min-h-[500px] overflow-hidden">
                             <AnimatePresence initial={false} custom={direction}>
                                 {isMounted && (
                                     <CertificationCard
                                         key={currentIndex}
-                                        {...certifications[currentIndex]}
+                                        title={certifications[currentIndex].title}
+                                        issuer={certifications[currentIndex].issuer}
+                                        imageUrl={certifications[currentIndex].imageUrl}
+                                        certLink={certifications[currentIndex].certLink}
                                         variants={sliderVariants}
                                         custom={direction}
                                     />
@@ -213,23 +217,26 @@ const PublicationSection = () => {
                         </div>
 
                         {/* Carousel Controls */}
-                        <div className="flex items-center justify-center gap-6 mt-6 w-full">
+                        <div className="flex items-center justify-center gap-4 sm:gap-6 mt-6 w-full">
                             <motion.button
                                 onClick={() => { setAutoScroll(false); prevCard(); }}
                                 whileHover={{ scale: 1.1, backgroundColor: "rgba(236, 72, 153, 0.2)" }}
                                 whileTap={{ scale: 0.95 }}
                                 className="p-2 rounded-full bg-black/30 backdrop-blur-sm border border-neutral-700 hover:border-pink-500 transition-colors"
                             >
-                                <ChevronLeft size={24} className="text-neutral-300 hover:text-pink-400 transition-colors" />
+                                <ChevronLeft size={20} className="text-neutral-300 hover:text-pink-400 transition-colors" />
                             </motion.button>
 
-                            <div className="flex gap-2">
+                            <div className="flex gap-1 sm:gap-2">
                                 {certifications.map((_, index) => (
                                     <motion.button
                                         key={index}
                                         onClick={() => selectCard(index)}
                                         whileHover={{ scale: 1.2 }}
-                                        className={`h-2 rounded-full transition-all duration-300 ${currentIndex === index ? "w-6 bg-gradient-to-r from-pink-500 to-purple-500" : "w-2 bg-neutral-600 hover:bg-neutral-400"}`}
+                                        className={`h-2 rounded-full transition-all duration-300 ${currentIndex === index
+                                            ? "w-6 bg-gradient-to-r from-pink-500 to-purple-500"
+                                            : "w-2 bg-neutral-600 hover:bg-neutral-400"
+                                            }`}
                                     />
                                 ))}
                             </div>
@@ -240,7 +247,7 @@ const PublicationSection = () => {
                                 whileTap={{ scale: 0.95 }}
                                 className="p-2 rounded-full bg-black/30 backdrop-blur-sm border border-neutral-700 hover:border-pink-500 transition-colors"
                             >
-                                <ChevronRight size={24} className="text-neutral-300 hover:text-pink-400 transition-colors" />
+                                <ChevronRight size={20} className="text-neutral-300 hover:text-pink-400 transition-colors" />
                             </motion.button>
                         </div>
                     </div>
@@ -251,4 +258,3 @@ const PublicationSection = () => {
 };
 
 export default PublicationSection;
-

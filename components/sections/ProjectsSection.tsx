@@ -1,6 +1,34 @@
 "use client";
 import ProjectCard from "@/components/ProjectCard";
-import { motion, Variants } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+// --- HYDRATION-SAFE useMediaQuery Hook ---
+const useMediaQuery = (query: string) => {
+    // 1. Initialize state to a default value (false) to ensure server and initial client render match.
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+        // 2. Move the media query logic inside a useEffect.
+        // This code only runs on the client, after the component has mounted.
+        const media = window.matchMedia(query);
+
+        // 3. Update state with the initial value on the client.
+        if (media.matches !== matches) {
+            setMatches(media.matches);
+        }
+
+        // 4. Set up a listener to update state on window resize.
+        const listener = () => setMatches(media.matches);
+        window.addEventListener('resize', listener);
+
+        // 5. Clean up the listener on component unmount.
+        return () => window.removeEventListener('resize', listener);
+    }, [matches, query]); // Dependencies ensure the hook re-evaluates if needed.
+
+    return matches;
+};
 
 const projects = [
     {
@@ -52,31 +80,48 @@ const projects = [
     },
 ];
 
-const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: {
+// Animation for the slider pages
+const sliderVariants: Variants = {
+    incoming: (direction: number) => ({
+        x: direction > 0 ? "100%" : "-100%",
+        opacity: 0,
+        scale: 0.9,
+    }),
+    active: {
+        x: 0,
         opacity: 1,
-        transition: {
-            staggerChildren: 0.15,
-            delayChildren: 0.2
-        }
-    }
-};
-
-const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.9 },
-    show: {
-        opacity: 1,
-        y: 0,
         scale: 1,
-        transition: {
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1]
-        }
-    }
+        transition: { duration: 0.5, ease: 'easeOut' }
+    },
+    outgoing: (direction: number) => ({
+        x: direction < 0 ? "100%" : "-100%",
+        opacity: 0,
+        scale: 0.9,
+        transition: { duration: 0.3, ease: 'easeIn' }
+    })
 };
 
 export default function ProjectsSection() {
+    // --- RESPONSIVE & PAGINATION STATE ---
+    const isLg = useMediaQuery('(min-width: 1024px)'); // Desktop: grid
+    const isSm = useMediaQuery('(min-width: 640px)');  // Tablet: 2 columns
+
+    const [[page, direction], setPage] = useState([0, 0]);
+
+    // --- DYNAMIC PAGINATION LOGIC ---
+    // If on a large screen, show all projects. Otherwise, paginate.
+    const itemsPerPage = isLg ? projects.length : isSm ? 2 : 1;
+    const totalPages = Math.ceil(projects.length / itemsPerPage);
+
+    const startIndex = page * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const displayedProjects = projects.slice(startIndex, endIndex);
+
+    const paginate = (newDirection: number) => {
+        const newPage = (page + newDirection + totalPages) % totalPages;
+        setPage([newPage, newDirection]);
+    };
+
     return (
         <section
             id="projects"
@@ -102,20 +147,54 @@ export default function ProjectsSection() {
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                 </motion.h1>
 
-                <motion.div
-                    // --- UPDATED: 1 col on mobile, 2 on small screens, 3 on large screens ---
-                    className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, amount: 0.1 }}
-                >
-                    {projects.map((proj, i) => (
-                        <motion.div key={i} variants={itemVariants} className="w-full">
-                            <ProjectCard {...proj} />
+                <div className="mt-12 relative min-h-[500px]">
+                    <AnimatePresence initial={false} custom={direction}>
+                        <motion.div
+                            key={page}
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                            custom={direction}
+                            variants={sliderVariants}
+                            initial="incoming"
+                            animate="active"
+                            exit="outgoing"
+                        >
+                            {displayedProjects.map((proj) => (
+                                <ProjectCard key={proj.title} {...proj} />
+                            ))}
                         </motion.div>
-                    ))}
-                </motion.div>
+                    </AnimatePresence>
+                </div>
+
+                {/* --- Navigation Controls (only show on tablet and mobile) --- */}
+                {!isLg && totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-6 mt-12">
+                        <motion.button
+                            onClick={() => paginate(-1)}
+                            whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
+                            className="p-2 rounded-full bg-black/30 backdrop-blur-sm border border-neutral-700 hover:border-pink-500 transition-colors"
+                        >
+                            <ChevronLeft size={24} className="text-neutral-300" />
+                        </motion.button>
+
+                        <div className="flex gap-2">
+                            {Array.from({ length: totalPages }).map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setPage([index, index > page ? 1 : -1])}
+                                    className={`h-2 rounded-full transition-all duration-300 ${page === index ? "w-6 bg-gradient-to-r from-pink-500 to-purple-500" : "w-2 bg-neutral-600 hover:bg-neutral-400"}`}
+                                />
+                            ))}
+                        </div>
+
+                        <motion.button
+                            onClick={() => paginate(1)}
+                            whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
+                            className="p-2 rounded-full bg-black/30 backdrop-blur-sm border border-neutral-700 hover:border-pink-500 transition-colors"
+                        >
+                            <ChevronRight size={24} className="text-neutral-300" />
+                        </motion.button>
+                    </div>
+                )}
             </div>
         </section>
     );

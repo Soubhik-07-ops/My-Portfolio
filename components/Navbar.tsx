@@ -11,7 +11,6 @@ const navItems = [
     { href: '#projects', label: 'Projects' },
     { href: '#publications', label: 'Pub & Cer' },
     { href: '#leetcode', label: 'LeetCode' },
-    { href: '#contact', label: 'Contact' },
 ]
 
 export default function Navbar() {
@@ -22,65 +21,113 @@ export default function Navbar() {
     const [isHeroVisible, setIsHeroVisible] = useState(true)
     const navbarRef = useRef<HTMLElement>(null)
 
+    const toggleMenu = () => setIsOpen(!isOpen)
+    const closeMenu = () => setIsOpen(false)
+
     useEffect(() => {
-        const scrollToHomeOnLoad = () => {
-            const homeSection = document.getElementById('home');
-            if (homeSection) {
-                setTimeout(() => {
-                    homeSection.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-            }
-        };
-        scrollToHomeOnLoad();
+        const currentHash = window.location.hash.replace('#', '')
+        if (currentHash && navItems.some(item => item.href === `#${currentHash}`)) {
+            setActiveSection(currentHash)
+        }
 
         const sectionIds = navItems.map(item => item.href.replace('#', ''))
-        let navbarHeight = navbarRef.current?.offsetHeight || 80;
+        let navbarHeight = navbarRef.current?.offsetHeight || 80
 
         const handleScroll = () => {
-            navbarHeight = navbarRef.current?.offsetHeight || 80;
-            const activationPoint = window.innerHeight * 0.25;
+            // ======================== FIX STARTS HERE ========================
+            // Check if scrolled to the very bottom of the page.
+            // A small tolerance (5px) handles rounding or sub-pixel issues.
+            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 5
 
-            let foundActiveSection = 'home';
+            if (atBottom) {
+                // If at the bottom, force the last section to be active.
+                const lastSectionId = sectionIds[sectionIds.length - 1]
+                if (activeSection !== lastSectionId) {
+                    setActiveSection(lastSectionId)
+                    const newHash = `#${lastSectionId}`
+                    if (window.location.hash !== newHash) {
+                        history.replaceState(null, '', newHash)
+                    }
+                }
+                setScrolled(window.scrollY > 50)
+                return // Exit early to prevent the logic below from running.
+            }
+            // ========================= FIX ENDS HERE =========================
+
+            // Special check for the top of the page
+            if (window.scrollY < 100) {
+                setActiveSection('home')
+                setScrolled(window.scrollY > 50)
+                setIsHeroVisible(true)
+
+                if (window.location.hash !== '' && window.location.hash !== '#home') {
+                    history.replaceState(null, '', ' ')
+                }
+                return
+            }
+
+            navbarHeight = navbarRef.current?.offsetHeight || 80
+            const activationPoint = window.innerHeight * 0.25
+            let foundActiveSection = ''
 
             for (let i = sectionIds.length - 1; i >= 0; i--) {
-                const id = sectionIds[i];
-                const section = document.getElementById(id);
-
+                const id = sectionIds[i]
+                const section = document.getElementById(id)
                 if (section) {
-                    const rect = section.getBoundingClientRect();
+                    const rect = section.getBoundingClientRect()
                     if (rect.top <= activationPoint && rect.bottom > activationPoint) {
-                        foundActiveSection = id;
-                        break;
+                        foundActiveSection = id
+                        break
                     }
                 }
             }
-            setActiveSection(foundActiveSection);
+
+            if (!foundActiveSection) {
+                let closestSection = { id: 'home', top: Infinity }
+                for (const id of sectionIds) {
+                    const section = document.getElementById(id)
+                    if (section) {
+                        const top = Math.abs(section.getBoundingClientRect().top)
+                        if (top < closestSection.top) {
+                            closestSection = { id, top }
+                        }
+                    }
+                }
+                foundActiveSection = closestSection.id
+            }
+
+            if (activeSection !== foundActiveSection) {
+                setActiveSection(foundActiveSection)
+
+                // Update URL hash
+                const newHash = `#${foundActiveSection}`
+                if (foundActiveSection && window.location.hash !== newHash) {
+                    history.replaceState(null, '', newHash)
+                }
+            }
+
 
             setScrolled(window.scrollY > 50)
 
             const homeSection = document.getElementById('home')
             if (homeSection) {
                 const homeRect = homeSection.getBoundingClientRect()
-                setIsHeroVisible(homeRect.top < window.innerHeight * 0.3 && homeRect.bottom > window.innerHeight * 0.7);
+                setIsHeroVisible(homeRect.top < window.innerHeight * 0.3 && homeRect.bottom > window.innerHeight * 0.7)
             }
         }
 
-        let scrollTimeout: NodeJS.Timeout;
+        let scrollTimeout: NodeJS.Timeout
         const debouncedHandleScroll = () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(handleScroll, 50);
-        };
+            clearTimeout(scrollTimeout)
+            scrollTimeout = setTimeout(handleScroll, 50)
+        }
 
         window.addEventListener('scroll', debouncedHandleScroll)
-        handleScroll()
         return () => {
-            window.removeEventListener('scroll', debouncedHandleScroll);
-            clearTimeout(scrollTimeout);
+            window.removeEventListener('scroll', debouncedHandleScroll)
+            clearTimeout(scrollTimeout)
         }
-    }, [])
-
-    const toggleMenu = () => setIsOpen(!isOpen)
-    const closeMenu = () => setIsOpen(false)
+    }, [activeSection]) // Added activeSection to dependencies to avoid stale state in checks
 
     return (
         <nav
@@ -95,17 +142,19 @@ export default function Navbar() {
             )}
         >
             <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+                {/* Logo */}
                 <a
                     href="#home"
                     onClick={closeMenu}
                     className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-transparent bg-clip-text
-                     hover:scale-105 transition-transform duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
-                     relative group"
+            hover:scale-105 transition-transform duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500
+            relative group"
                 >
                     Soubhik Roy
                     <span className="absolute -bottom-1 left-0 h-[3px] w-full bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left"></span>
                 </a>
 
+                {/* Desktop Navigation */}
                 <div className="hidden md:flex gap-8 text-sm font-semibold items-center">
                     {navItems.map(item => (
                         <a
@@ -137,12 +186,13 @@ export default function Navbar() {
                             closeMenu()
                         }}
                         className="ml-4 px-4 py-2 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 text-white rounded-md font-semibold
-                       hover:shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                hover:shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                     >
                         Let's Talk
                     </button>
                 </div>
 
+                {/* Mobile Navigation Toggle */}
                 <div className="md:hidden flex items-center gap-4">
                     <button
                         onClick={() => {
@@ -163,6 +213,7 @@ export default function Navbar() {
                 </div>
             </div>
 
+            {/* Mobile Menu */}
             <div className={cn(
                 "md:hidden px-6 pb-6 space-y-3 shadow-md transition-all duration-300 ease-in-out overflow-hidden",
                 "bg-white/95 dark:bg-gray-950/95",

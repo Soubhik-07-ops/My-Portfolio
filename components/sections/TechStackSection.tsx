@@ -1,8 +1,25 @@
-// techstacksection.tsx
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
 import TechIcon from '@/components/TechIcon';
-import { motion, Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+// Custom device detection with animation preferences
+function useDeviceType() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return isMobile;
+}
 
 interface Skill {
     name: string;
@@ -48,16 +65,50 @@ const allSkills: Skill[] = [
 ];
 
 const categories = ['All', 'Frontend', 'Backend', 'Devops', 'AI/ML'];
+const ITEMS_PER_PAGE = 9;
+
+// Fixed spring animation config with proper typing
+const springConfig = {
+    type: "spring" as const,
+    stiffness: 300,
+    damping: 20
+};
 
 export default function TechStackSection() {
     const [activeCategory, setActiveCategory] = useState('All');
-    const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const isMobile = useDeviceType();
+    const [isAnimating, setIsAnimating] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
+    const filteredSkills = allSkills.filter(skill => skill.category.includes(activeCategory));
+    const totalPages = Math.ceil(filteredSkills.length / ITEMS_PER_PAGE);
+    const paginatedSkills = filteredSkills.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE
+    );
+
+    const handleCategoryChange = (category: string) => {
+        if (category === activeCategory || isAnimating) return;
+        setIsAnimating(true);
+        setActiveCategory(category);
+        setTimeout(() => setIsAnimating(false), 500);
+    };
+
+    const navigatePage = (direction: 'next' | 'prev') => {
+        if (isAnimating) return;
+        setIsAnimating(true);
+        direction === 'next'
+            ? setCurrentPage(prev => (prev + 1) % totalPages)
+            : setCurrentPage(prev => (prev - 1 + totalPages) % totalPages);
+        setTimeout(() => setIsAnimating(false), 400);
+    };
+
+    // Original background bubbles logic from your first version
     const bubblePositions = useMemo(() => {
         return Array(20).fill(0).map(() => ({
             width: Math.random() * 10 + 5,
@@ -69,74 +120,13 @@ export default function TechStackSection() {
         }));
     }, []);
 
-    const filteredSkills = allSkills.filter(skill =>
-        skill.category.includes(activeCategory)
-    );
-
-    // Animation variants
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.05,
-                delayChildren: 0.3
-            }
-        }
-    };
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-    };
-
-    // --- UPDATED BUTTON VARIANTS FOR GRADIENT BACKGROUND ---
-    const buttonVariants: Variants = {
-        rest: { // Default state for inactive buttons
-            scale: 1,
-            // Applying the red-pink-blue gradient
-            background: "linear-gradient(to right, #EF4444, #EC4899, #3B82F6)", // red-500, pink-500, blue-500
-            color: '#FFFFFF', // White text for contrast on gradient
-            boxShadow: "0px 0px 5px rgba(0,0,0,0.3)", // Subtle shadow
-            transition: { duration: 0.3 }
-        },
-        hover: {
-            scale: 1.05,
-            // Slightly intensified or shifted gradient on hover
-            background: "linear-gradient(to right, #dc2626, #db2777, #2563eb)", // slightly darker shades
-            boxShadow: "0px 0px 15px rgba(59, 130, 246, 0.7)", // More prominent blue glow on hover
-            color: '#FFFFFF',
-            transition: { duration: 0.2 }
-        },
-        tap: {
-            scale: 0.95,
-            transition: { duration: 0.1 }
-        },
-        selected: {
-            scale: 1.1, // Slightly larger when selected
-            // Distinct gradient for the selected button
-            background: "linear-gradient(135deg, #3B82F6, #8B5CF6)", // Blue to Purple gradient
-            color: "#FFFFFF",
-            boxShadow: "0px 0px 20px rgba(139, 92, 246, 0.7)", // Stronger purple glow
-            transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 20
-            }
-        }
-    };
-
     return (
         <section
             id="tech-stack"
-            className="relative min-h-screen py-16 px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 overflow-hidden" // Added responsive horizontal padding
-            style={{
-                backgroundColor: '#0e253df1',
-                position: 'relative',
-                zIndex: 10,
-            }}
+            className="relative min-h-screen py-16 px-4 sm:px-6 md:px-8 lg:px-10 scroll-mt-20 overflow-hidden"
+            style={{ backgroundColor: '#0e253df1', position: 'relative', zIndex: 10 }}
         >
-            {/* Animated background elements - only render on client */}
+            {/* Original background bubbles from your first version */}
             {isMounted && (
                 <div className="absolute inset-0 overflow-hidden z-0">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -168,9 +158,10 @@ export default function TechStackSection() {
                 </div>
             )}
 
-            <div className="max-w-6xl mx-auto px-0 sm:px-0 relative z-10"> {/* Changed this to px-0 as outer section handles it */}
+            <div className="max-w-6xl mx-auto px-0 sm:px-0 relative z-10">
+                {/* Title with subtle animation */}
                 <motion.h1
-                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 sm:mb-10 md:mb-12 text-primary text-center relative z-20" // Adjusted heading sizes and margins
+                    className="text-4xl md:text-6xl font-bold mb-12 text-primary text-center relative z-20"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -179,56 +170,127 @@ export default function TechStackSection() {
                     <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/4 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                 </motion.h1>
 
-                {/* Category Filter Buttons */}
-                <motion.div
-                    className="flex flex-wrap justify-center mb-10 sm:mb-12 gap-2 sm:gap-3 md:gap-4 relative z-10" // Adjusted gap and margin-bottom
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                >
+                {/* Category buttons with magnetic hover effect */}
+                <div className="flex flex-wrap justify-center gap-3 mb-12">
                     {categories.map(category => (
                         <motion.button
                             key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className="custom-radius px-4 py-1.5 sm:px-6 sm:py-2 text-sm sm:text-base font-medium relative overflow-hidden" // Adjusted button padding and font size
-                            variants={buttonVariants}
-                            initial="rest"
-                            whileHover="hover"
-                            whileTap="tap"
-                            animate={activeCategory === category ? "selected" : "rest"}
+                            onClick={() => handleCategoryChange(category)}
+                            className={`relative px-5 py-2 rounded-full text-sm font-medium ${activeCategory === category
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
+                                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                }`}
+                            whileHover={{
+                                y: -2,
+                                transition: { duration: 0.2 }
+                            }}
+                            whileTap={{ scale: 0.95 }}
                         >
                             {category}
                         </motion.button>
                     ))}
-                </motion.div>
+                </div>
 
-                {/* Tech Icons Grid */}
-                <motion.div
-                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 md:gap-8 relative z-10" // Adjusted grid gap and added xl breakpoint for more columns
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                >
-                    {filteredSkills.map((skill) => (
-                        <motion.div
-                            key={skill.name}
-                            variants={item}
-                            whileHover={{
-                                scale: 1.1,
-                                transition: { type: "spring", stiffness: 400, damping: 10 }
-                            }}
-                            onHoverStart={() => setHoveredSkill(skill.name)}
-                            onHoverEnd={() => setHoveredSkill(null)}
-                        >
-                            <TechIcon
-                                name={skill.name}
-                                iconPath={skill.iconPath}
-                                percentage={skill.percentage}
-                                isHighlighted={hoveredSkill === skill.name}
-                            />
-                        </motion.div>
-                    ))}
-                </motion.div>
+                {isMobile ? (
+                    <div className="relative">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={`${activeCategory}-${currentPage}`}
+                                className="grid grid-cols-3 gap-4"
+                                initial={{ opacity: 0, x: currentPage > 0 ? 50 : -50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: currentPage > 0 ? -50 : 50 }}
+                                transition={{ duration: 0.4 }}
+                            >
+                                {paginatedSkills.map(skill => (
+                                    <TechIcon
+                                        key={skill.name}
+                                        name={skill.name}
+                                        iconPath={skill.iconPath}
+                                        percentage={skill.percentage}
+                                    />
+                                ))}
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {totalPages > 1 && (
+                            <motion.div
+                                className="flex items-center justify-center gap-6 mt-10"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                <motion.button
+                                    onClick={() => navigatePage('prev')}
+                                    className="p-3 rounded-full bg-gray-800/80 backdrop-blur-sm border border-gray-700"
+                                    whileHover={{
+                                        scale: 1.1,
+                                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                        borderColor: '#3b82f6'
+                                    }}
+                                    whileTap={{ scale: 0.9 }}
+                                >
+                                    <ChevronLeft className="text-gray-300" size={20} />
+                                </motion.button>
+
+                                <div className="flex gap-2">
+                                    {Array.from({ length: totalPages }).map((_, idx) => (
+                                        <motion.button
+                                            key={idx}
+                                            onClick={() => setCurrentPage(idx)}
+                                            className={`w-3 h-3 rounded-full transition-colors ${currentPage === idx ? 'bg-blue-500' : 'bg-gray-600'
+                                                }`}
+                                            whileHover={{ scale: 1.3 }}
+                                            transition={{ type: 'spring', stiffness: 500 }}
+                                        />
+                                    ))}
+                                </div>
+
+                                <motion.button
+                                    onClick={() => navigatePage('next')}
+                                    className="p-3 rounded-full bg-gray-800/80 backdrop-blur-sm border border-gray-700"
+                                    whileHover={{
+                                        scale: 1.1,
+                                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                        borderColor: '#3b82f6'
+                                    }}
+                                    whileTap={{ scale: 0.9 }}
+                                >
+                                    <ChevronRight className="text-gray-300" size={20} />
+                                </motion.button>
+                            </motion.div>
+                        )}
+                    </div>
+                ) : (
+                    <motion.div
+                        className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-5"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        {filteredSkills.map((skill, index) => (
+                            <motion.div
+                                key={skill.name}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{
+                                    delay: index * 0.03,
+                                    ...springConfig
+                                }}
+                                whileHover={{
+                                    y: -5,
+                                    transition: { duration: 0.2 }
+                                }}
+                            >
+                                <TechIcon
+                                    name={skill.name}
+                                    iconPath={skill.iconPath}
+                                    percentage={skill.percentage}
+                                />
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
             </div>
         </section>
     );

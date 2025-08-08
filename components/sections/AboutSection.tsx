@@ -1,4 +1,5 @@
 "use client";
+
 import AboutCard from "@/components/AboutCard";
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -75,13 +76,19 @@ export default function AboutSection() {
 
     return (
         <section
-            className="relative min-h-screen py-16 scroll-mt-20 overflow-hidden"
+            id="about"
+            className="w-full px-4 sm:px-6 py-16 scroll-mt-20 relative overflow-hidden min-h-screen"
             style={{
-                backgroundColor: 'rgba(43, 55, 88, 0.34)',
-                position: 'relative',
+                background: 'radial-gradient(circle at 10% 20%, rgba(15, 30, 60, 0.9) 0%, rgba(5, 15, 40, 0.95) 90%)',
+                boxShadow: 'inset 0 0 100px rgba(0, 0, 0, 0.7)'
             }}
         >
-            <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-0 left-1/4 w-32 h-32 rounded-full bg-blue-600 blur-[80px]"></div>
+                <div className="absolute bottom-0 right-1/4 w-40 h-40 rounded-full bg-purple-600 blur-[100px]"></div>
+            </div>
+
+            <div className="max-w-6xl mx-auto relative z-10">
                 <motion.h1
                     className="text-4xl md:text-6xl font-bold mb-12 text-primary text-center relative z-20"
                     initial={{ opacity: 0, y: -20 }}

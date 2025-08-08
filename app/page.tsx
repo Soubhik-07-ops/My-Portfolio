@@ -28,8 +28,8 @@ export default function Home() {
 
       <LeetCodeDashboard />
 
-      {/* ✉️ Contact Section */}
-      <ContactSection />
+      {/* ✉️ Contact Section
+      <ContactSection /> */}
 
 
       <BackToTopButton />

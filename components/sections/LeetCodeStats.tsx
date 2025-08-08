@@ -1,28 +1,34 @@
 'use client';
 
-import { useState, useEffect, Key } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, useSpring, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { FiAward, FiCode, FiCalendar, FiCheckCircle, FiStar, FiTrendingUp } from 'react-icons/fi';
 import { FaCrown, FaMedal, FaTrophy } from 'react-icons/fa';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
-// --- INTERFACES & CONSTANTS ---
 interface LeetCodeData {
     profile: {
         username: string;
         submitStats: {
-            acSubmissionNum: { difficulty: string; count: number; submissions: number; }[];
+            acSubmissionNum: { difficulty: string; count: number; submissions: number }[];
         };
-        profile: { ranking: number; };
+        profile: { ranking: number };
         badges: any[];
         streak: number;
     };
-    languages: { languageName: string; problemsSolved: number; }[];
+    languages: { languageName: string; problemsSolved: number }[];
     calendar: string;
 }
 
-const HARDCODED_BADGES = [
+interface DisplayBadge {
+    id: string;
+    displayName: string;
+    imageUrl: string;
+    date: string;
+}
+
+const HARDCODED_BADGES: DisplayBadge[] = [
     { id: 'annual-200', displayName: '200 Days Badge 2025', imageUrl: '/images/badges/200-days-badge.png', date: '2025-07-26' },
     { id: 'annual-100', displayName: '100 Days Badge 2025', imageUrl: '/images/badges/100-days-badge.png', date: '2025-04-11' },
     { id: 'annual-50', displayName: '50 Days Badge 2025', imageUrl: '/images/badges/50-days-badge.png', date: '2025-02-20' },
@@ -36,13 +42,6 @@ const HARDCODED_BADGES = [
     { id: 'daily-dec', displayName: 'Dec Badge', imageUrl: '/images/badges/december-2024.png', date: '2024-12-31' },
 ];
 
-interface DisplayBadge {
-    id: string;
-    displayName: string;
-    imageUrl: string;
-    date: string;
-}
-
 const COLORS = {
     Easy: '#4ade80',
     Medium: '#fbbf24',
@@ -50,7 +49,6 @@ const COLORS = {
     Card: '#1e293b',
 };
 
-// --- ANIMATION VARIANTS ---
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -68,7 +66,6 @@ const itemVariants = {
     },
 } as const;
 
-// --- HELPER COMPONENTS ---
 const AnimatedCounter = ({ value }: { value: number }) => {
     const spring = useSpring(0, { mass: 0.8, stiffness: 100, damping: 20 });
     const display = useTransform(spring, (current) => Math.round(current).toLocaleString());
@@ -143,7 +140,6 @@ const GlowingBorderCard = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-// --- MAIN DASHBOARD COMPONENT ---
 const LeetCodeDashboard = () => {
     const [data, setData] = useState<LeetCodeData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -159,7 +155,7 @@ const LeetCodeDashboard = () => {
                 const result = await response.json();
                 if (!result.profile) throw new Error("Profile data not found in API response.");
 
-                const mergedData = { ...result, profile: { ...result.profile, streak: 263 } };
+                const mergedData = { ...result, profile: { ...result.profile, streak: 269 } };
                 setData(mergedData);
 
                 if (result.calendar) {
@@ -170,7 +166,6 @@ const LeetCodeDashboard = () => {
                         return;
                     }
 
-                    // Create a full year date range
                     const today = new Date();
                     const startDate = new Date();
                     startDate.setFullYear(today.getFullYear() - 1);
@@ -202,7 +197,9 @@ const LeetCodeDashboard = () => {
     }, []);
 
     if (loading) return (
-        <div className="flex flex-col justify-center items-center h-screen z-10 relative bg-gradient-to-br from-gray-900 to-gray-800">
+        <div className="flex flex-col justify-center items-center h-screen z-10 relative" style={{
+            background: 'radial-gradient(circle at 10% 20%, rgba(15, 30, 60, 0.9) 0%, rgba(5, 15, 40, 0.95) 90%)',
+        }}>
             <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity, type: 'tween', ease: 'easeInOut' }}
@@ -224,7 +221,9 @@ const LeetCodeDashboard = () => {
     );
 
     if (error || !data) return (
-        <div id="leetcode-error" className="py-16 px-4 sm:px-6 md:px-8 lg:px-10">
+        <div id="leetcode-error" className="py-16 px-4 sm:px-6 md:px-8 lg:px-10" style={{
+            background: 'radial-gradient(circle at 10% 20%, rgba(15, 30, 60, 0.9) 0%, rgba(5, 15, 40, 0.95) 90%)',
+        }}>
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -265,9 +264,18 @@ const LeetCodeDashboard = () => {
     return (
         <section
             id="leetcode"
-            className="relative min-h-screen z-10 bg-gradient-to-br from-gray-900 to-gray-800 py-16 px-4 sm:px-6 md:px-8 lg:px-10"
+            className="w-full px-4 sm:px-6 py-16 scroll-mt-20 relative overflow-hidden min-h-screen"
+            style={{
+                background: 'radial-gradient(circle at 10% 20%, rgba(15, 30, 60, 0.9) 0%, rgba(5, 15, 40, 0.95) 90%)',
+                boxShadow: 'inset 0 0 100px rgba(0, 0, 0, 0.7)'
+            }}
         >
-            <div className="max-w-7xl mx-auto relative z-20">
+            <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-0 left-1/4 w-32 h-32 rounded-full bg-blue-600 blur-[80px]"></div>
+                <div className="absolute bottom-0 right-1/4 w-40 h-40 rounded-full bg-purple-600 blur-[100px]"></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -283,7 +291,7 @@ const LeetCodeDashboard = () => {
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1/3 bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 rounded-full"></div>
                     </motion.h1>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start mb-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start mb-8 pb-2">
                         {/* Left Column */}
                         <motion.div
                             className="lg:col-span-2 space-y-6"
@@ -295,7 +303,7 @@ const LeetCodeDashboard = () => {
                                 <GlowingBorderCard>
                                     <div className="text-center">
                                         <motion.div
-                                            className="inline-block mb-4"
+                                            className="inline-block mb-10"
                                             whileHover={{ rotate: 5 }}
                                             transition={{ type: 'spring' }}
                                         >
@@ -335,7 +343,7 @@ const LeetCodeDashboard = () => {
                             </motion.div>
                             <motion.div variants={itemVariants}>
                                 <GlowingBorderCard>
-                                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
+                                    <h2 className="text-xl font-semibold text-white mb-13.5 flex items-center">
                                         <FiCode className="mr-2 text-blue-400" />
                                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-purple-300">
                                             Top Languages
