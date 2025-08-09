@@ -23,7 +23,7 @@ interface FloatingLinkProps {
  */
 const FloatingLink: React.FC<FloatingLinkProps> = ({ href, iconSrc, label, position = '', color }) => {
     // The 'absolute' class is passed via the 'position' prop, making the component flexible.
-    const classNames = `group z-10 flex items-center gap-2 py-2 px-4 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-full text-sm transition-all text-gray-300 hover:text-white ${color} ${position}`;
+    const classNames = `group z-10 flex items-center gap-2 py-3 px-5 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-full text-sm transition-all text-gray-300 hover:text-white ${color} ${position}`;
 
     return (
         <motion.a
@@ -42,8 +42,8 @@ const FloatingLink: React.FC<FloatingLinkProps> = ({ href, iconSrc, label, posit
                 <Image
                     src={iconSrc}
                     alt={`${label} logo`}
-                    width={20}
-                    height={20}
+                    width={24}  // Increased from 20 to 24
+                    height={24} // Increased from 20 to 24
                     className="group-hover:brightness-125 transition-all"
                 />
             </span>
@@ -106,7 +106,6 @@ const Footer = (): JSX.Element => {
             </div>
 
             {/* --- DESKTOP VIEW: Floating Social Links --- */}
-            {/* UPDATED: Changed `md:block` to `min-[1340px]:block` to set the breakpoint to 1340px. */}
             <div className="hidden min-[1340px]:block absolute top-0 left-0 right-0 h-full w-full">
                 {socialLinks.map((link) => (
                     <FloatingLink key={link.label} {...link} />
@@ -117,11 +116,13 @@ const Footer = (): JSX.Element => {
             <div className="relative z-20 max-w-2xl mx-auto text-center px-4">
 
                 {/* --- MOBILE VIEW: Top two logos --- */}
-                {/* UPDATED: Changed `md:hidden` to `min-[1340px]:hidden` to match the new breakpoint. */}
-                <div className="flex justify-center items-center gap-80 mb-10 min-[1340px]:hidden">
+                <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 mb-10 min-[1340px]:hidden">
                     {/* Rendered without the 'position' prop to appear in the normal document flow. */}
-                    <FloatingLink {...socialLinks[0]} position="" />
-                    <FloatingLink {...socialLinks[2]} position="" />
+                    {socialLinks.map((link, index) => (
+                        <div key={index} className="scale-110 sm:scale-125"> {/* Added scaling for mobile */}
+                            <FloatingLink {...link} position="" />
+                        </div>
+                    ))}
                 </div>
 
                 {/* --- Contact Hub (Visible on all screen sizes) --- */}
@@ -162,35 +163,28 @@ const Footer = (): JSX.Element => {
                     </div>
                 </motion.div>
 
-                {/* --- MOBILE VIEW: Bottom two logos --- */}
-                {/* UPDATED: Changed `md:hidden` to `min-[1340px]:hidden` to match the new breakpoint. */}
-                <div className="flex justify-center items-center gap-80 mt-10 min-[1340px]:hidden">
-                    <FloatingLink {...socialLinks[1]} position="" />
-                    <FloatingLink {...socialLinks[3]} position="" />
-                </div>
-            </div>
-
-            {/* --- Bottom Bar (Visible on all screen sizes) --- */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                viewport={{ once: true }}
-                className="relative z-20 max-w-7xl mx-auto mt-20 text-center text-sm text-gray-500 px-4"
-            >
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <div className="flex items-center gap-2 hover:text-gray-300 transition-colors">
-                        <MapPin size={14} className="text-pink-500" />
-                        <span>Dhanbad, India</span>
+                {/* --- Bottom Bar (Visible on all screen sizes) --- */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    viewport={{ once: true }}
+                    className="relative z-20 max-w-7xl mx-auto mt-20 text-center text-sm text-gray-500 px-4"
+                >
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="flex items-center gap-2 hover:text-gray-300 transition-colors">
+                            <MapPin size={14} className="text-pink-500" />
+                            <span>Dhanbad, India</span>
+                        </div>
+                        <div className="hidden sm:block">•</div>
+                        <a href="tel:+919835518101" className="flex items-center gap-2 hover:text-gray-300 transition-colors">
+                            <Phone size={14} className="text-blue-500" />
+                            <span>+91 98355 18101</span>
+                        </a>
                     </div>
-                    <div className="hidden sm:block">•</div>
-                    <a href="tel:+919835518101" className="flex items-center gap-2 hover:text-gray-300 transition-colors">
-                        <Phone size={14} className="text-blue-500" />
-                        <span>+91 98355 18101</span>
-                    </a>
-                </div>
-                <p className="mt-4">© {year} Soubhik Roy. All rights reserved.</p>
-            </motion.div>
+                    <p className="mt-4">© {year} Soubhik Roy. All rights reserved.</p>
+                </motion.div>
+            </div>
         </footer>
     );
 };

@@ -1,36 +1,37 @@
 "use client";
+
 import ProjectCard from "@/components/ProjectCard";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// --- HYDRATION-SAFE useMediaQuery Hook ---
-const useMediaQuery = (query: string) => {
-    // 1. Initialize state to a default value (false) to ensure server and initial client render match.
+// Define the type for a single project
+interface Project {
+    title: string;
+    description: string;
+    tech: string[];
+    github: string;
+    liveUrl?: string; // Optional as not all projects have a live URL
+    imageUrl: string;
+}
+
+const useMediaQuery = (query: string): boolean => {
     const [matches, setMatches] = useState(false);
 
     useEffect(() => {
-        // 2. Move the media query logic inside a useEffect.
-        // This code only runs on the client, after the component has mounted.
         const media = window.matchMedia(query);
-
-        // 3. Update state with the initial value on the client.
         if (media.matches !== matches) {
             setMatches(media.matches);
         }
-
-        // 4. Set up a listener to update state on window resize.
         const listener = () => setMatches(media.matches);
         window.addEventListener('resize', listener);
-
-        // 5. Clean up the listener on component unmount.
         return () => window.removeEventListener('resize', listener);
-    }, [matches, query]); // Dependencies ensure the hook re-evaluates if needed.
+    }, [matches, query]);
 
     return matches;
 };
 
-const projects = [
+const projects: Project[] = [
     {
         title: "AI Model Benchmarking Tool",
         description: "Developed a comprehensive tool to benchmark over 25 machine learning models against custom datasets. Features include PDF report generation, real-time performance dashboards via Supabase, and achieving sub-50ms latency for critical operations.",
@@ -80,36 +81,34 @@ const projects = [
     },
 ];
 
-// Animation for the slider pages
+// Animation Variants for Framer Motion, now with sliding effect
 const sliderVariants: Variants = {
     incoming: (direction: number) => ({
         x: direction > 0 ? "100%" : "-100%",
         opacity: 0,
-        scale: 0.9,
+        scale: 0.95,
     }),
     active: {
         x: 0,
         opacity: 1,
         scale: 1,
-        transition: { duration: 0.5, ease: 'easeOut' }
+        transition: { duration: 0.6, ease: "easeOut" }
     },
     outgoing: (direction: number) => ({
         x: direction < 0 ? "100%" : "-100%",
         opacity: 0,
-        scale: 0.9,
-        transition: { duration: 0.3, ease: 'easeIn' }
+        scale: 0.95,
+        transition: { duration: 0.4, ease: "easeIn" }
     })
 };
 
-export default function ProjectsSection() {
-    // --- RESPONSIVE & PAGINATION STATE ---
-    const isLg = useMediaQuery('(min-width: 1024px)'); // Desktop: grid
-    const isSm = useMediaQuery('(min-width: 640px)');  // Tablet: 2 columns
 
-    const [[page, direction], setPage] = useState([0, 0]);
+export default function ProjectsSection(): JSX.Element {
+    const isLg = useMediaQuery('(min-width: 1024px)');
+    const isSm = useMediaQuery('(min-width: 640px)');
 
-    // --- DYNAMIC PAGINATION LOGIC ---
-    // If on a large screen, show all projects. Otherwise, paginate.
+    const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
+
     const itemsPerPage = isLg ? projects.length : isSm ? 2 : 1;
     const totalPages = Math.ceil(projects.length / itemsPerPage);
 
@@ -148,7 +147,7 @@ export default function ProjectsSection() {
                 </motion.h1>
 
                 <div className="mt-12 relative min-h-[500px]">
-                    <AnimatePresence initial={false} custom={direction}>
+                    <AnimatePresence initial={false} custom={direction} mode="wait">
                         <motion.div
                             key={page}
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -165,7 +164,6 @@ export default function ProjectsSection() {
                     </AnimatePresence>
                 </div>
 
-                {/* --- Navigation Controls (only show on tablet and mobile) --- */}
                 {!isLg && totalPages > 1 && (
                     <div className="flex items-center justify-center gap-6 mt-12">
                         <motion.button
