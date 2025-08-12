@@ -35,9 +35,9 @@ const projects: Project[] = [
     {
         title: "AI Model Benchmarking Tool",
         description: "Developed a comprehensive tool to benchmark over 25 machine learning models against custom datasets. Features include PDF report generation, real-time performance dashboards via Supabase, and achieving sub-50ms latency for critical operations.",
-        tech: ["Next.js", "Supabase", "PostgreSQL", "Pandas", "Plotly"],
+        tech: ["Next.js", "Supabase", "PostgreSQL", "Pandas", "Plotly", "Flask"],
         github: "https://github.com/Soubhik-07-ops/AI_MODEL_BENCHMARK",
-        liveUrl: "https://ai-benchmarking-tool.vercel.app/",
+        liveUrl: "https://bench-marking-tool.vercel.app/",
         imageUrl: "/images/projects/Benchmark.png",
     },
     {
