@@ -1,14 +1,14 @@
 import React, { useCallback } from "react";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import type { Container, Engine, ISourceOptions } from "tsparticles-engine";
+import Particles from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import type { Container, Engine, ISourceOptions } from "@tsparticles/engine";
 
 const ParticleBackground = () => {
     // This function loads the tsparticles engine
     const particlesInit = useCallback(async (engine: Engine) => {
         // You can initiate the tsParticles instance (engine) here, adding custom shapes or presets.
-        // This loads the full bundle, providing all features.
-        await loadFull(engine);
+        // This loads the slim bundle, providing common features.
+        await loadSlim(engine);
     }, []);
 
     // This function is called when the particles container is loaded
